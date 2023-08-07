@@ -1,33 +1,38 @@
-DROP DATABASE IF EXISTS employee_db;
-CREATE DATABASE employee_db;
+DROP DATABASE IF EXISTS employee_DB;
 
-USE employee_db;
+CREATE DATABASE employee_DB;
+
+USE employee_DB;
 
 CREATE TABLE department (
-  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  dept_name VARCHAR(255) NOT NULL
+    department_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    dept_name VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE role (
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
+CREATE TABLE roledb (
+    roledb_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL, 
     salary DECIMAL,
     department_id INT,
-    FOREIGN KEY (department_id)
-    REFERENCES department(id)
-    ON DELETE SET NULL
+    FOREIGN KEY (department_id) REFERENCES department(department_id)
 );
 
 CREATE TABLE employee (
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    first_name VARCHAR(255) NOT NULL,
+    employee_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(255) NOT NULL, 
     last_name VARCHAR(255) NOT NULL,
-    role_id INT,
-    FOREIGN KEY (role_id)
-    REFERENCES role(id)
-    ON DELETE SET NULL,
+    roledb_id INT,
     manager_id INT,
-    FOREIGN KEY (manager_id)
-    REFERENCES employee(id)
-    ON DELETE SET NULL
-);
+    FOREIGN KEY (roledb_id) REFERENCES role(roledb_id),
+    FOREIGN KEY (manager_id) REFERENCES department(department_id)
+)
+
+--SELECTS and JOINS the id's from the Role and Department tables together into one result.
+SELECT employee.first_name, 
+	employee.last_name,
+	role.title AS Title,
+    role.salary AS Salary,
+    department.dept_name AS Department
+FROM employee 
+	INNER JOIN role ON employee.role_id=roledb.roledb_id
+    INNER JOIN department ON employee.roledb_id=department.department_id
